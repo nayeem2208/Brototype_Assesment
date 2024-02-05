@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import "./App.css";
+import axios from "axios";
+import image from "../public/brototype_logo-removebg-preview.png";
+import Form from "./Components/Form";
 
 function App() {
-  const [count, setCount] = useState(0)
+  useEffect(() => {
+    async function call() {
+      try {
+        let fetchData = await axios.get("http://localhost:3000/check");
+        console.log(fetchData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    call();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div
+      className="h-screen min-h-full relative"
+      style={{
+        background:
+          "radial-gradient(circle, rgba(89,89,89,1) 0%, rgba(17,17,17,1) 100%)",
+      }}
+    >
+      <img
+        src={image}
+        alt=""
+        style={{
+          position: "absolute",
+          top: -65,
+          left: 0,
+          width: "35vh",
+          height: "auto",
+        }}
+      />
+      <div className="flex justify-center items-center pt-36 ">
+        <button className="mr-2">Add User</button>
+        <button>User Details</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <Form />
+    </div>
+  );
 }
 
-export default App
+export default App;
