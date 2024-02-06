@@ -60,7 +60,7 @@ export default function ModalUnstyled(props) {
 
     try {
       let updatedStudent = await axios.put(
-        `http://localhost:3000/updateUser/${props.user?._id}`,
+        `https://www.broto.dreamhome.cloud/updateUser/${props.user?._id}`,
         formData
       );
       setOpen(false);

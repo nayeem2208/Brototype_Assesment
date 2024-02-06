@@ -7,6 +7,7 @@ import { refreshContext } from "../src/context";
 import { toast } from "react-toastify";
 import ModalUnstyled from "./Components/Modal";
 
+
 function Routers() {
   const [students, setStudents] = useState([]);
   const { refresh, setRefresh } = refreshContext();
@@ -15,7 +16,7 @@ function Routers() {
   useEffect(() => {
     async function call() {
       try {
-        let fetchData = await axios.get("http://localhost:3000/displayUser");
+        let fetchData = await axios.get("https://www.broto.dreamhome.cloud/displayUser");
         setStudents(fetchData.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -29,7 +30,7 @@ function Routers() {
       if (students[id - 1]) {
         const studentToDelete = students[id - 1];
         console.log(studentToDelete, "is");
-        await axios.delete("http://localhost:3000/deleteUser", {
+        await axios.delete("https://www.broto.dreamhome.cloud/deleteUser", {
           data: {
             id: studentToDelete._id,
           },

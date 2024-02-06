@@ -21,7 +21,7 @@ app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 
 const corsOptions = {
-  origin: ["http://localhost:2000"],
+  origin: ["http://localhost:2000","https://www.broto.dreamhome.cloud","https://broto.dreamhome.cloud"],
   credentials: true,
 };
 
