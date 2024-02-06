@@ -1,11 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import {refreshContext} from '../context'
+import { refreshContext } from "../context";
 
 function Form() {
-
-  const { refresh,setRefresh} = refreshContext();
+  const { refresh, setRefresh } = refreshContext();
 
   const [form, setForm] = useState({
     name: "",
@@ -57,8 +56,8 @@ function Form() {
     }
 
     try {
-      let addUser = await axios.post("http://localhost:3000/addUser", form);
-      setRefresh(!refresh)
+      let addUser = await axios.post("https://www.broto.dreamhome.cloud/addUser", form);
+      setRefresh(!refresh);
       toast.success("Successfully inserted");
       setForm({
         name: "",
@@ -68,7 +67,7 @@ function Form() {
         domain: "",
       });
     } catch (error) {
-      console.log(error.response.data.error)
+      console.log(error.response.data.error);
       if (error.response && error.response.data && error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
@@ -79,15 +78,15 @@ function Form() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex justify-center pb-24">
+      <div className="flex justify-center pb-16">
         <div className="flex flex-col bg-black rounded-lg p-4 shadow-sm w-3/5 py-6">
           <h2 className="text-white font-bold text-lg my mt-4">
             Add Student details
           </h2>
 
           <div
-            className={`mt-4 rounded-md border-white ${
-              errors.name && "border-red-500"
+            className={`mt-3 rounded-md border-white ${
+              errors.name && "border-red-500 "
             }`}
           >
             <input
@@ -102,12 +101,12 @@ function Form() {
               id="name"
             />
             {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+              <p className="text-red-500 text-xs ">{errors.name}</p>
             )}
           </div>
 
           <div
-            className={`mt-4 rounded-md border-white ${
+            className={`mt-3 rounded-md border-white ${
               errors.email && "border-red-500"
             }`}
           >
@@ -128,7 +127,7 @@ function Form() {
           </div>
 
           <div
-            className={`mt-4 rounded-md border-white ${
+            className={`mt-3 rounded-md border-white ${
               errors.phone && "border-red-500"
             }`}
           >
@@ -149,7 +148,7 @@ function Form() {
           </div>
 
           <div
-            className={`mt-4 rounded-md border-white ${
+            className={`mt-3 rounded-md border-white ${
               errors.batch && "border-red-500"
             }`}
           >
@@ -170,7 +169,7 @@ function Form() {
           </div>
 
           <div
-            className={`mt-4 rounded-md border-white ${
+            className={`mt-3 rounded-md border-white ${
               errors.domain && "border-red-500"
             }`}
           >

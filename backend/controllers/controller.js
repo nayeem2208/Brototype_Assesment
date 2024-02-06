@@ -1,4 +1,3 @@
-import adminModel from "../modals/adminModal.js";
 import userModel from "../modals/userModal.js";
 
 const addUser = async (req, res) => {
@@ -78,4 +77,43 @@ const deleteUser=async(req,res)=>{
   }
 }
 
-export { displayUser, addUser,deleteUser };
+const updateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updateData = req.body;
+
+    const { fullname, email, phone, batch, domain } = updateData;
+    const existingUserWithNewEmail = await userModel.findOne({ email: email, _id: { $ne: userId } });
+    console.log(existingUserWithNewEmail,'emial esssss')
+    if (existingUserWithNewEmail) {
+      return res.status(400).json({ error: 'Email is already in use by another user.' });
+    }
+    const trimmedFullname = fullname.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedBatch = batch.trim();
+    const trimmedDomain = domain.trim();
+
+    if (!trimmedFullname || !trimmedEmail || !trimmedPhone || !trimmedBatch || !trimmedDomain) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    const updatedStudent = await userModel.findByIdAndUpdate(
+      userId,
+      { $set: { fullname: trimmedFullname, email: trimmedEmail, phone: trimmedPhone, batch: trimmedBatch, domain: trimmedDomain } },
+      { new: true }
+    );
+
+    if (!updatedStudent) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.status(200).json(updatedStudent);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+export { displayUser, addUser,deleteUser,updateUser };

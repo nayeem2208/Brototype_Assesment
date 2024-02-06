@@ -5,41 +5,92 @@ import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import { TextField } from "@mui/material";
 import { Button } from "@mui/base";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function ModalUnstyled(props) {
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({
-    name: props.user?.fullname || "",
+    fullname: props.user?.fullname || "",
     email: props.user?.email || "",
     phone: props.user?.phone || "",
     batch: props.user?.batch || "",
     domain: props.user?.domain || "",
   });
-  const handleClose = () => setOpen(false);
+  const [errors, setErrors] = React.useState({
+    fullname: "",
+    email: "",
+    phone: "",
+    batch: "",
+    domain: "",
+  });
+
   React.useEffect(() => {
-    if (props) {
+    if (props.user) {
       setOpen(true);
     }
-  }, [props]);
+  }, [props.user]);
+
+  const handleClose = () => {
+    setOpen(false);
+    props.onCloseModal();
+  };
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
+    const validationErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key].trim()) {
+        validationErrors[key] = `${
+          key.charAt(0).toUpperCase() + key.slice(1)
+        } is required.`;
+      }
+    });
+
+    if (formData.phone.trim() && !/^\d{10}$/.test(formData.phone.trim())) {
+      validationErrors.phone = "Phone number should be 10 digits.";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      // If there are validation errors, update the state and return
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
-      console.log(formData, "fm");
-      //   await axios.put(`http://localhost:3000/updateUser/${props.user._id}`, formData);
-      props.onCloseModal();
+      let updatedStudent = await axios.put(
+        `https://www.broto.dreamhome.cloud/updateUser/${props.user?._id}`,
+        formData
+      );
+      setOpen(false);
+      props.onCloseModal(updatedStudent);
     } catch (error) {
       console.error("Error updating student information:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        console.error("Error adding user:", error);
+      }
     }
   };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+
+    // Update form data
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
     }));
+
+    // Clear errors for the current field
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]: "",
+    }));
   };
+
   return (
     <div>
       <Modal
@@ -58,18 +109,20 @@ export default function ModalUnstyled(props) {
           }}
         >
           <h2 id="unstyled-modal-title" className="modal-title">
-            Add Student
+            Edit Student
           </h2>
           <form onSubmit={handleFormSubmit}>
             <TextField
-              id="name"
-              label="Name"
-              value={formData.name}
+              id="fullname"
+              label="Full Name"
+              value={formData.fullname}
               variant="outlined"
               fullWidth
               margin="normal"
               size="small"
               onChange={handleInputChange}
+              error={Boolean(errors.fullname)}
+              helperText={errors.fullname}
             />
             <TextField
               id="email"
@@ -80,6 +133,8 @@ export default function ModalUnstyled(props) {
               margin="normal"
               size="small"
               onChange={handleInputChange}
+              error={Boolean(errors.email)}
+              helperText={errors.email}
             />
             <TextField
               id="phone"
@@ -90,6 +145,8 @@ export default function ModalUnstyled(props) {
               margin="normal"
               size="small"
               onChange={handleInputChange}
+              error={Boolean(errors.phone)}
+              helperText={errors.phone}
             />
             <TextField
               id="batch"
@@ -100,6 +157,8 @@ export default function ModalUnstyled(props) {
               margin="normal"
               size="small"
               onChange={handleInputChange}
+              error={Boolean(errors.batch)}
+              helperText={errors.batch}
             />
             <TextField
               id="domain"
@@ -110,15 +169,22 @@ export default function ModalUnstyled(props) {
               margin="normal"
               size="small"
               onChange={handleInputChange}
+              error={Boolean(errors.domain)}
+              helperText={errors.domain}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Submit
-            </Button>
+            <div className="mt-4 flex justify-end">
+              <button
+                className="cursor-pointer font-semibold overflow-hidden relative z-100 border border-green-800 group px-4 py-1" // Adjusted padding here
+                type="submit"
+              >
+                <span className="relative z-10 text-green-800 group-hover:text-white  duration-500">
+                  {" "}
+                  Submit
+                </span>
+                <span className="absolute w-full h-full bg-green-600 -left-16 top-0 -rotate-45 group-hover:rotate-0 group-hover:left-0 duration-500"></span>
+                <span className="absolute w-full h-full bg-green-600 -right-16 top-0 -rotate-45 group-hover:rotate-0 group-hover:right-0 duration-500"></span>
+              </button>
+            </div>
           </form>
         </ModalContent>
       </Modal>
@@ -200,5 +266,3 @@ const ModalContent = styled("div")(
     }
   `
 );
-
-// Define the rest of your styled components (TriggerButton)...
