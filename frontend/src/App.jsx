@@ -5,6 +5,7 @@ import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Routers from "./Routes";
 import { Link, useLocation } from 'react-router-dom';
+import ModalUnstyled from "./Components/Modal";
 
 function App() {
 
@@ -30,15 +31,17 @@ function App() {
           width: "35vh",
           height: "auto",
         }}
+        
       />
       <div className="flex justify-center items-center pt-24 ">
       <Link to={'/'} className={location.pathname === '/' ? "bg-black text-green-300 p-3 rounded-t-lg mr-4" : "text-white px-3"}>
-          <button className="">Add User</button>
+          <button className="">Add Student</button>
         </Link>
         <Link to={'/students'} className={location.pathname === '/students' ? "bg-black text-green-300 p-3 rounded-t-lg" : "text-white"}>
-          <button>User Details</button>
+          <button>All Students </button>
         </Link>
       </div>
+      <ModalUnstyled/>
       <Routers/>
     </div>
   );

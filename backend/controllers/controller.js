@@ -36,7 +36,7 @@ const addUser = async (req, res) => {
     }
 
     let check = await userModel.findOne({ email: trimmedEmail });
-    // console.log(check);
+
     if (!check) {
       let student = await userModel.create({
         fullname: trimmedName,
@@ -46,7 +46,7 @@ const addUser = async (req, res) => {
         domain: trimmedDomain,
       });
     } else {
-        console.log('else aahn mone')
+        
       return res.status(400).json({ error: "Email is already exist"});
     }
     // console.log(student);
@@ -60,7 +60,6 @@ const addUser = async (req, res) => {
 const displayUser = async (req, res) => {
   try {
     let students = await userModel.find({});
-    console.log(students);
     res.status(200).json(students);
   } catch (error) {
     console.log(error);
@@ -68,4 +67,15 @@ const displayUser = async (req, res) => {
   }
 };
 
-export { displayUser, addUser };
+const deleteUser=async(req,res)=>{
+  try {
+    console.log(req.body)
+    let deleteStudent=await userModel.findByIdAndDelete(req.body.id)
+    res.status(200).json('Deleted')
+  } catch (error) {
+    console.log(error)
+    res.status(400).json(error)
+  }
+}
+
+export { displayUser, addUser,deleteUser };
