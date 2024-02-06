@@ -1,22 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
-import axios from "axios";
 import image from "../public/brototype_logo-removebg-preview.png";
-import Form from "./Components/Form";
+import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Routers from "./Routes";
+import { Link, useLocation } from 'react-router-dom';
 
 function App() {
-  useEffect(() => {
-    async function call() {
-      try {
-        let fetchData = await axios.get("http://localhost:3000/check");
-        console.log(fetchData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-    call();
-  }, []);
 
+  const location = useLocation();
+ 
+  
   return (
     <div
       className="h-screen min-h-full relative"
@@ -25,6 +19,7 @@ function App() {
           "radial-gradient(circle, rgba(89,89,89,1) 0%, rgba(17,17,17,1) 100%)",
       }}
     >
+      <ToastContainer/>
       <img
         src={image}
         alt=""
@@ -36,11 +31,15 @@ function App() {
           height: "auto",
         }}
       />
-      <div className="flex justify-center items-center pt-36 ">
-        <button className="mr-2">Add User</button>
-        <button>User Details</button>
+      <div className="flex justify-center items-center pt-24 ">
+      <Link to={'/'} className={location.pathname === '/' ? "bg-black text-green-300 p-3 rounded-t-lg mr-4" : "text-white px-3"}>
+          <button className="">Add User</button>
+        </Link>
+        <Link to={'/students'} className={location.pathname === '/students' ? "bg-black text-green-300 p-3 rounded-t-lg" : "text-white"}>
+          <button>User Details</button>
+        </Link>
       </div>
-      <Form />
+      <Routers/>
     </div>
   );
 }

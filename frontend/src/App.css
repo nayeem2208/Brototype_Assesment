@@ -108,3 +108,7 @@
 .con a {
   color: rgb(0, 136, 255);
 }
+
+.bold-text {
+  font-weight: bold;
+}
