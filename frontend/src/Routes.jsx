@@ -6,12 +6,17 @@ import axios from "axios";
 import { refreshContext } from "../src/context";
 import { toast } from "react-toastify";
 import ModalUnstyled from "./Components/Modal";
-
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
 
 function Routers() {
   const [students, setStudents] = useState([]);
   const { refresh, setRefresh } = refreshContext();
   const [selectedUser, setSelectedUser] = useState(null);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     async function call() {
@@ -25,7 +30,19 @@ function Routers() {
     call();
   }, [refresh]);
 
-  const handleDeleteRow = async (id) => {
+  const handleDeleteRow = (id) => {
+    setConfirmationDialogOpen(true);
+    setDeleteId(id);
+  };
+
+  const handleConfirmationDialogClose = (confirmed) => {
+    setConfirmationDialogOpen(false);
+    if (confirmed) {
+      performDeleteAction(deleteId);
+    }
+  };
+
+  const performDeleteAction = async (id) => {
     try {
       if (students[id - 1]) {
         const studentToDelete = students[id - 1];
@@ -65,7 +82,7 @@ function Routers() {
       updatedStudent.data,
       ...students.slice(user + 1),
     ]);
-    console.log()
+    toast.success("Successfully updated");
     setSelectedUser(null);
   };
 
@@ -87,6 +104,28 @@ function Routers() {
       {selectedUser && (
         <ModalUnstyled user={selectedUser} onCloseModal={handleModalClose} />
       )}
+      <Dialog
+        open={confirmationDialogOpen}
+        onClose={() => handleConfirmationDialogClose(false)}
+      >
+        <DialogTitle>Want to delete this data?</DialogTitle>
+        <DialogActions>
+          <Button
+            onClick={() => handleConfirmationDialogClose(false)}
+            color="primary"
+            style={{ backgroundColor: "green", color: "white" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => handleConfirmationDialogClose(true)}
+            color="primary"
+            style={{ backgroundColor: "red", color: "white" }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
